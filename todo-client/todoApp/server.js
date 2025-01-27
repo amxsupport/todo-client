@@ -14,7 +14,6 @@ mongoose.connect('mongodb://localhost:27017/todo', {
 }).catch((err) => {
     console.error('Erreur lors de la connexion à MongoDB:', err);
 });
-
 // Middleware pour analyser le JSON
 app.use(express.json());
 
