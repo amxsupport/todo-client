@@ -1,20 +1,24 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "votre_cle_secrete"; // Remplacez par une clé secrète sécurisée
+const { SECRET_KEY } = require('./config');
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ error: 'not authorized' });
+        console.log('No auth token provided');
+        return res.status(401).json({ error: 'Authentication required' });
     }
 
     const token = authHeader.split(' ')[1];
 
     try {
+        console.log('Verifying token...');
         const decoded = jwt.verify(token, SECRET_KEY);
-        req.userId = decoded.userId; // Transmettre le userId aux autres middlewares
+        console.log('Token verified, userId:', decoded.userId);
+        req.userId = decoded.userId;
         next();
     } catch (error) {
-        return res.status(401).json({ error: 'not authorized' });
+        console.error('Token verification failed:', error.message);
+        return res.status(401).json({ error: 'Invalid or expired token' });
     }
 };

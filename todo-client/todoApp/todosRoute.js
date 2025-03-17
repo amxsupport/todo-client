@@ -3,16 +3,16 @@ const router = express.Router();
 const todoController = require('./todoController');
 const authMiddleware = require('./authMiddleware');
 
-// Route pour générer un token JWT
-router.post('/login', todoController.login);
+// Todo routes (all protected by auth middleware)
+router.get('/', authMiddleware, todoController.getTodos);
+router.post('/', authMiddleware, todoController.createTodo);
+router.put('/:id([0-9a-fA-F]{24})', authMiddleware, todoController.updateTodo); // Validate ObjectId format
+router.delete('/:id([0-9a-fA-F]{24})', authMiddleware, todoController.deleteTodo); // Validate ObjectId format
+router.get('/:id([0-9a-fA-F]{24})', authMiddleware, todoController.getTodo);
 
-// Routes pour les Todos
-router.get('/', authMiddleware, todoController.getTodos);          // Récupérer la liste des Todos
-router.post('/', authMiddleware, todoController.createTodo);       // Créer une nouvelle Todo
-
-router.get('/:id', authMiddleware, todoController.getTodo);        // Récupérer une Todo par ID
-router.put('/:id', authMiddleware, todoController.updateTodo);     // Modifier une Todo par ID
-router.delete('/:id', authMiddleware, todoController.deleteTodo);  // Supprimer une Todo par ID
+// Handle invalid ObjectId formats
+router.use('/:id', (req, res) => {
+    res.status(400).json({ error: 'Invalid todo ID format' });
+});
 
 module.exports = router;
-
