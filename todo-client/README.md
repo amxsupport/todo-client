@@ -32,6 +32,27 @@ PORT=3001 npm start
 ```
 The React application will run on http://localhost:3001
 
+### Stopping the Application
+
+To stop the application, you need to terminate both the frontend and backend servers:
+
+1. Press `Ctrl + C` in both terminal windows running the servers
+   - One terminal running the backend (`node todoApp/run-server.js`)
+   - One terminal running the frontend (`npm start`)
+
+Alternatively, you can find and kill the processes using ports 3000 and 3001:
+```bash
+# On macOS/Linux
+lsof -i :3000,3001 | awk 'NR>1 {print $2}' | xargs kill
+
+# On Windows
+# Find processes
+netstat -ano | findstr :3000
+netstat -ano | findstr :3001
+# Kill them using the PIDs from the previous command
+taskkill /PID <pid> /F
+```
+
 ## Features
 
 - User Authentication (Login/Logout)
